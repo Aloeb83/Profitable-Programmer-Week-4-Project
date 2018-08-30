@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css" />
         <link rel="stylesheet" href="{% static 'movies/app.css' %}" />
 
-        <title>My Movies</title>
+        <title>Nintendo Switch Reviews</title>
 	</head>
 
     <body>
@@ -19,7 +19,7 @@
     		<nav class="nav">
     			<div class="container">
     				<div class="nav__menu">
-    					<a class="nav__header" href="/">Clever Movie</a>
+    					<a class="nav__header" href="/">Nintendo Switch Reviews</a>
                         <div class="col-md-5 pull-right">
                         	<form name="search" action="" class="form-inline">
                         		<div class="form-group">
@@ -36,12 +36,22 @@
 
             <section class="result">
             	<div class="container">
+
+                    {% if messages %}
+                    	{% for message in messages %}
+                    		<div class="alert alert-{{ message.tags }}">
+                    			<a href="#" class="close" data-dismiss="alert">&times;</a>
+                                {{ message }}
+                    		</div>
+                    	{% endfor %}
+                    {% endif %}
+
             		<div class="movies">
             			{% for movie in search_result %}
                             <div class="movies__item">
-                                <i class="movies__item-star fa fa-star hide"></i>
+                                <i class="movies__item-star fa fa-gamepad hide"></i>
                                 <p class="movies__item-rating hide">{{ movie.fields.Rating }}/10</p>
-                                <button type="button" class="movies__item-expander hide" data-toggle="modal" data-target="#modal-{{movie.id}}">View Details</button>
+                                <button type="button" class="movies__item-expander hide" data-toggle="modal" data-target="#modal-{{movie.id}}">More Info</button>
                             	<img class="movies__item-image" src="{{ movie.fields.Pictures.0.url }}" alt="" />
                                 <div class="movies__item-title">
                                 	<p>{{ movie.fields.Name }}</p>

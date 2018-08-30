@@ -20,12 +20,16 @@ def create(request):
     if request.method == 'POST':
         data = {
             'Name': request.POST.get('name'),
-            'Pictures': [{'url': request.POST.get('url')}],
+            'Pictures': [{'url': request.POST.get('url') or 'https://vignette.wikia.nocookie.net/janethevirgin/images/4/42/Image-not-available_1.jpg/revision/latest?cb=20150721102313'}],
             'Rating': int(request.POST.get('rating')),
             'Notes': request.POST.get('notes')
         }
 
-        AT.insert(data)
+        try:
+            response = AT.insert(data)
+            messages.success(request, 'Added New Game: {}'.format(response['fields'].get('Name')))
+        except Exception as e:
+            messages.warning(request, 'Uh-oh, Something went wrong: {}'.format(e))
     return redirect('/')
 
 
@@ -33,9 +37,22 @@ def edit(request, movie_id):
     if request.method == 'POST':
         data = {
             'Name': request.POST.get('name'),
-            'Pictures': [{'url': request.POST.get('url')}],
+            'Pictures': [{'url': request.POST.get('url') or 'https://vignette.wikia.nocookie.net/janethevirgin/images/4/42/Image-not-available_1.jpg/revision/latest?cb=20150721102313'}],
             'Rating': int(request.POST.get('rating')),
             'Notes': request.POST.get('notes')
         }
-        AT.update(movie_id, data)
+        try:
+            response = AT.update(movie_id, data)
+            messages.success(request, 'Successfully Edited Game Info For: {}'.format(response['fields'].get('Name')))
+        except Exception as e:
+            messages.warning(request, 'Uh-oh, Something went wrong: {}'.format(e))
+    return redirect('/')
+
+def delete(request, movie_id):
+    try:
+        movie_name = AT.get(movie_id)['fields'].get('Name')
+        AT.delete(movie_id)
+        messages.warning(request, 'Game Deleted: {}'.format(movie_name))
+    except Exception as e:
+        messages.warning(request, 'Uh-oh, Something went wrong: {}'.format(e))
     return redirect('/')
